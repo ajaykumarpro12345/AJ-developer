@@ -231,13 +231,16 @@ must(/<\/head>/, `<meta name="keywords" content="AJ Developers, website developm
 <link rel="stylesheet" href="aj.css"/>
 </head>`);
 must(/<\/body>/, `<script type="module" src="firebase-init.js"></script>
+<script type="module" src="aj-3d.js"></script>
 <script src="aj.js"></script>
 </body>`);
 
-// ---------- 6. 3D scene: serve locally ----------
-const SPLINE = 'https://prod.spline.design/OemZaz9nwST7iivs/scene.splinecode';
-if (fs.existsSync(path.join(OUT, 'assets/prod.spline.design/OemZaz9nwST7iivs/scene.splinecode')))
-  h = h.split(SPLINE).join('assets/prod.spline.design/OemZaz9nwST7iivs/scene.splinecode');
+// ---------- 6. 3D scene & CTA corner art: replace Gleam "G" with AJ Developers 3D "A" ----------
+replaceElement(/<div[^>]*class="spline-container"/, () =>
+  `<div id="w-node-_925d86ef-8f6e-0802-9f7c-1b00967c147a-266e0c52" class="spline-container"><div id="aj-3d-stage" class="aj-3d-stage" aria-label="AJ Developers 3D A emblem"></div></div>`
+);
+must(/assets\/cdn\.prod\.website-files\.com\/66bb1d0dc020bf46266e0c4a\/66bec3c1d995802dc67d53bb_CTA-bl\.svg/g, 'assets/aj-cta-bl.svg');
+must(/assets\/cdn\.prod\.website-files\.com\/66bb1d0dc020bf46266e0c4a\/66bec3c1873d8fc9b4b32f36_CTA-tr\.svg/g, 'assets/aj-cta-tr.svg');
 
 // ---------- 7. rebrand any remaining visible text / attributes ----------
 function rebrand(s) { return s.replace(/gleam\s+studio('s)?/gi, BRAND + '$1').replace(/\bgleam\b(?!-)/gi, BRAND); }
