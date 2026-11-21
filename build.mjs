@@ -198,7 +198,7 @@ const LD_JSON = JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'ProfessionalService',
   name: BRAND,
-  url: 'https://aj-developer-7467b.web.app/',
+  url: 'https://aj-developer-delta.vercel.app/',
   email: EMAIL,
   telephone: PHONE,
   description: DESC,
@@ -225,7 +225,7 @@ const FAVICON = `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www
 must(/<\/head>/, `<meta name="keywords" content="AJ Developers, website development, web design, e-commerce website, SaaS web app, portfolio website, Android APK development, WebView APK, Bengaluru web agency"/>
 <meta name="robots" content="index, follow"/>
 <meta name="theme-color" content="#080912"/>
-<link rel="canonical" href="https://aj-developer-7467b.web.app/"/>
+<link rel="canonical" href="https://aj-developer-delta.vercel.app/"/>
 <link rel="icon" href="${FAVICON}"/>
 <script type="application/ld+json">${LD_JSON}</script>
 <link rel="stylesheet" href="aj.css"/>
