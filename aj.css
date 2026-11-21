@@ -27,13 +27,13 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Keep mosaic scroll height on both desktop & mobile now that .wr-wall is removed */
+/* Keep mosaic scroll height compact & snappy on desktop and mobile */
 .wr-section {
-  height: 240vh !important;
+  height: 200vh !important;
 }
 @media (max-width: 991px) {
   .wr-section {
-    height: 320vh !important;
+    height: 195vh !important;
   }
 }
 @media (max-width: 767px) {

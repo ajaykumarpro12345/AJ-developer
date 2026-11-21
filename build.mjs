@@ -93,6 +93,11 @@ must(
   /g\.fromTo\(veil,\{opacity:0\},\{opacity:1,ease:'sine\.inOut',scrollTrigger:\{trigger:wall,start:'top 165%',end:'top 88%',scrub:\.8\}\}\);\s*g\.fromTo\(wall,\{opacity:0\},\{opacity:1,ease:'none',scrollTrigger:\{trigger:wall,start:'top 96%',end:'top 62%',scrub:\.8\}\}\);/,
   ''
 );
+// Shorten mobile mosaic scroll duration for faster, smoother mobile UX
+must(
+  /end:function\(\)\{return '\+='\+Math\.round\(innerHeight\*2\.4\)\},scrub:\.8/,
+  "end:function(){return '+='+Math.round(innerHeight*1.15)},scrub:.45"
+);
 
 // ---------- 2. nav ----------
 // logo svg -> text logo

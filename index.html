@@ -376,7 +376,7 @@ c.addEventListener('mouseenter',function(){build().play()});c.addEventListener('
 c.addEventListener('focusin',function(){build().play()});c.addEventListener('focusout',function(){build().reverse()});
 });
 }).add('(max-width:991px)',function(){
-pull(g.timeline({scrollTrigger:{trigger:sec,start:'top top',end:function(){return '+='+Math.round(innerHeight*2.4)},scrub:.8,invalidateOnRefresh:true}})).set({},{},1);
+pull(g.timeline({scrollTrigger:{trigger:sec,start:'top top',end:function(){return '+='+Math.round(innerHeight*1.15)},scrub:.45,invalidateOnRefresh:true}})).set({},{},1);
 
 g.set(logos,{filter:blur});
 logos.forEach(function(l){var t=g.to(l,{filter:sharp,duration:.3,ease:'power1.out',paused:true});S.create({trigger:l,start:'top 85%',onEnter:function(){t.play()},onLeaveBack:function(){t.reverse()}})});
