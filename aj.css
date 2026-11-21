@@ -414,13 +414,49 @@ html {
   border-color: rgba(248, 113, 113, 0.75);
 }
 
-/* Services dropdown: clean 2-column layout for the 2 services */
+/* Services dropdown: clean full-width 2-card layout & mobile optimization */
+.new_nav-dd-grid {
+  grid-template-columns: 1fr !important;
+  width: 100% !important;
+}
 .new_nav-dd-card_grid.aj-two-services {
   grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  grid-template-rows: auto !important;
+  gap: 16px !important;
+  width: 100% !important;
+  max-width: 100% !important;
 }
-@media (max-width: 767px) {
+.new_nav-dd-card_grid.aj-two-services .new_nav-dd-card {
+  min-height: 250px !important;
+  height: auto !important;
+  width: 100% !important;
+  padding: 24px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  gap: 24px !important;
+}
+.new_nav-dd-card_grid.aj-two-services .new_nav-dd-card-bottom {
+  gap: 10px !important;
+}
+.new_nav-dd-card_grid.aj-two-services .para-reveal {
+  max-height: none !important;
+  opacity: 1 !important;
+}
+@media (max-width: 991px) {
+  .new_nav-dd {
+    max-height: 82dvh !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
   .new_nav-dd-card_grid.aj-two-services {
     grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+  .new_nav-dd-card_grid.aj-two-services .new_nav-dd-card {
+    min-height: 180px !important;
+    padding: 18px !important;
+    gap: 16px !important;
   }
 }
 

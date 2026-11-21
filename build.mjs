@@ -109,7 +109,16 @@ function simplifyNavLink(label, newLabel, href) {
   }
   if (!n) console.warn('WARN nav link not found', label);
 }
-simplifyNavLink('Work', 'Work', '#work');
+// Remove "Work" link from navbar (both desktop & mobile)
+{
+  const re = /<a\b[^>]*class="nav-link[^"]*"[^>]*>/g; let m;
+  while ((m = re.exec(h))) {
+    const e = elementEnd(h, m.index), inner = h.slice(m.index, e);
+    if (!/<div>Work<\/div>/.test(inner)) continue;
+    h = h.slice(0, m.index) + h.slice(e);
+    re.lastIndex = m.index;
+  }
+}
 simplifyNavLink('Tools', 'About', 'about.html');
 simplifyNavLink('Blog', 'Contact', 'contact.html');
 
@@ -146,7 +155,6 @@ replaceElement(/<div class="footer-links-wrap">/, () =>
         `<div class="footer-link h"><strong>Company</strong></div>` +
         `<div class="footer-links">` +
           `<a href="about.html" class="footer-link">About Us</a>` +
-          `<a href="#work" class="footer-link">Work</a>` +
           `<a href="customer-support.html" class="footer-link">Customer Support</a>` +
           `<a href="contact.html" class="footer-link">Contact Us</a>` +
         `</div>` +
