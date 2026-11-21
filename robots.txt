@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://aj-developer-7467b.web.app/sitemap.xml
