@@ -24,6 +24,22 @@ isSupported().then((ok) => {
 }).catch(() => {});
 
 async function sendEmailNotification(payload) {
+  // 1. Prefer our Vercel Gmail SMTP endpoint (lands directly in Gmail Primary inbox)
+  try {
+    const apiRes = await fetch("/api/send-inquiry", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Accept": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    if (apiRes.ok) {
+      const data = await apiRes.json();
+      if (data && data.ok) return data;
+    }
+  } catch (_) {
+    // Fall through to FormSubmit if /api/send-inquiry is unavailable
+  }
+
+  // 2. Fallback to FormSubmit if GMAIL_APP_PASSWORD isn't set in Vercel yet
   const body = {
     _subject: `New ${payload.packageType} Inquiry from ${payload.name} — AJ Developers`,
     _replyto: payload.email,
