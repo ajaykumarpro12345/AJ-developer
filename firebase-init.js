@@ -31,6 +31,7 @@ async function sendEmailNotification(payload) {
     _captcha: "false",
     "Name": payload.name,
     "Email": payload.email,
+    "Mobile Number": payload.mobile,
     "Service Package": payload.packageType,
     "Website Type": payload.websiteType,
     "APK Type": payload.apkType || "N/A (Website only)",
@@ -55,6 +56,7 @@ async function submitInquiry(data) {
   const payload = {
     name: (data.name || "").trim(),
     email: (data.email || "").trim(),
+    mobile: (data.mobile || "").trim(),
     packageType: (data.packageType || "Website").trim(),
     websiteType: (data.websiteType || "").trim(),
     apkType: (data.apkType || "").trim(),

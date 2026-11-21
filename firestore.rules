@@ -8,6 +8,8 @@ service cloud.firestore {
                     && request.resource.data.name.size() >= 2
                     && request.resource.data.email is string
                     && request.resource.data.email.matches('^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$')
+                    && request.resource.data.mobile is string
+                    && request.resource.data.mobile.size() >= 10
                     && request.resource.data.packageType in ['Website', 'Website + APK']
                     && request.resource.data.websiteType is string
                     && request.resource.data.websiteType.size() >= 2

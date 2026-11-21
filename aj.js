@@ -91,6 +91,20 @@
       detailsEl.placeholder = 'Description of product you want';
     }
 
+    // Create Mobile Number input right after Email
+    var mobileEl = document.createElement('input');
+    mobileEl.type = 'tel';
+    mobileEl.id = 'mobile_number';
+    mobileEl.name = 'mobile';
+    mobileEl.className = 'input is-dark w-input';
+    mobileEl.maxLength = 24;
+    mobileEl.placeholder = 'Mobile Number';
+    mobileEl.autocomplete = 'tel';
+    mobileEl.required = true;
+    if (emailEl && emailEl.parentNode) {
+      emailEl.parentNode.insertBefore(mobileEl, emailEl.nextSibling);
+    }
+
     // Create Reference URL (optional) input after textarea
     var refUrlEl = document.createElement('input');
     refUrlEl.type = 'url';
@@ -121,6 +135,10 @@
 
     var isName = function (v) { return v.length >= 2; };
     var isEmail = function (v) { return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v); };
+    var isMobile = function (v) {
+      var digits = v.replace(/\D/g, '');
+      return digits.length >= 10 && digits.length <= 15;
+    };
     var isDesc = function (v) { return v.length >= 10; };
     var isOptionalUrl = function (v) {
       if (!v) return false;
@@ -130,8 +148,9 @@
     function updateProgress() {
       if (!progBar) return;
       var score = 0;
-      if (nameEl && isName(nameEl.value.trim())) score += 20;
-      if (emailEl && isEmail(emailEl.value.trim())) score += 20;
+      if (nameEl && isName(nameEl.value.trim())) score += 15;
+      if (emailEl && isEmail(emailEl.value.trim())) score += 15;
+      if (mobileEl && isMobile(mobileEl.value.trim())) score += 15;
       if (state.packageType) score += 15;
       if (state.websiteType) score += 15;
       if (state.packageType === 'Website + APK') {
@@ -139,7 +158,7 @@
       } else if (state.packageType === 'Website') {
         score += 10;
       }
-      if (detailsEl && isDesc(detailsEl.value.trim())) score += 15;
+      if (detailsEl && isDesc(detailsEl.value.trim())) score += 10;
       if (refUrlEl && isOptionalUrl(refUrlEl.value.trim())) score += 5;
       progBar.style.width = Math.min(100, score) + '%';
     }
@@ -188,9 +207,10 @@
       return box;
     }
 
-    // 2. Single Name + Work Email
+    // 2. Single Name + Work Email + Mobile Number
     var nameBox = wrapFloating(nameEl, 'Name', isName);
     var emailBox = wrapFloating(emailEl, 'Work Email', isEmail);
+    var mobileBox = wrapFloating(mobileEl, 'Mobile Number', isMobile);
 
     // 3. Package selector: Website vs Website + APK
     var pkgGroup = document.createElement('div');
@@ -238,9 +258,9 @@
         '</button>' +
       '</div>';
 
-    // Insert option groups right after Email
-    if (emailBox && emailBox.parentNode) {
-      emailBox.parentNode.insertBefore(pkgGroup, emailBox.nextSibling);
+    // Insert option groups right after Mobile Number
+    if (mobileBox && mobileBox.parentNode) {
+      mobileBox.parentNode.insertBefore(pkgGroup, mobileBox.nextSibling);
       pkgGroup.parentNode.insertBefore(webTypeGroup, pkgGroup.nextSibling);
       webTypeGroup.parentNode.insertBefore(apkTypeGroup, webTypeGroup.nextSibling);
     }
@@ -334,6 +354,7 @@
       [
         [nameEl, nameBox, isName, false],
         [emailEl, emailBox, isEmail, false],
+        [mobileEl, mobileBox, isMobile, false],
         [detailsEl, detailsBox, isDesc, false],
         [refUrlEl, refUrlBox, isOptionalUrl, true]
       ].forEach(function (item) {
@@ -368,6 +389,7 @@
       var inquiryData = {
         name: fullName,
         email: emailEl ? emailEl.value.trim() : '',
+        mobile: mobileEl ? mobileEl.value.trim() : '',
         packageType: state.packageType,
         websiteType: state.websiteType,
         apkType: state.apkType,
