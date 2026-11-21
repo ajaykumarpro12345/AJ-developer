@@ -1,19 +1,18 @@
-// Interactive 3D Metallic Chrome & Royal-Blue "A" Emblem (Three.js) for AJ Developers
+// High-visibility 3D Silver & Electric-Blue "AJ" Monogram (Three.js) for AJ Developers
 import * as THREE from "https://esm.sh/three@0.170.0";
 
 function createStudioEnv(renderer) {
   const pmrem = new THREE.PMREMGenerator(renderer);
   const envScene = new THREE.Scene();
-  envScene.background = new THREE.Color(0x03050d);
+  envScene.background = new THREE.Color(0x162447);
 
-  // Studio light panels that create the signature dark-chrome + electric-blue reflections
+  // Large bright studio softboxes so metallic surfaces always stay crisp and luminous
   const panels = [
-    { color: 0x3b82ff, pos: [7, 5, 6], rot: [0, -0.6, 0], size: [7, 10] },
-    { color: 0x001aff, pos: [-7, -2, 5], rot: [0, 0.7, 0], size: [8, 9] },
-    { color: 0xdbeafe, pos: [2, 8, 5], rot: [0.8, 0, 0], size: [9, 3.2] },
-    { color: 0x1d4ed8, pos: [0, -7, 4], rot: [-0.9, 0, 0], size: [10, 4] },
-    { color: 0xffffff, pos: [-5, 4, -6], rot: [0, 2.4, 0], size: [3, 9] },
-    { color: 0x2563eb, pos: [6, -3, -5], rot: [0, -2.3, 0], size: [5, 8] }
+    { color: 0xffffff, pos: [0, 8, 8], rot: [0.6, 0, 0], size: [18, 10] },
+    { color: 0x60a5fa, pos: [10, 3, 6], rot: [0, -0.9, 0], size: [14, 14] },
+    { color: 0x3b82f6, pos: [-10, -2, 6], rot: [0, 0.9, 0], size: [14, 14] },
+    { color: 0xe0f2fe, pos: [0, -8, 6], rot: [-0.8, 0, 0], size: [16, 8] },
+    { color: 0x93c5fd, pos: [0, 2, -10], rot: [0, Math.PI, 0], size: [18, 14] }
   ];
 
   panels.forEach((p) => {
@@ -25,87 +24,62 @@ function createStudioEnv(renderer) {
     envScene.add(mesh);
   });
 
-  const envRT = pmrem.fromScene(envScene, 0.035);
+  const envRT = pmrem.fromScene(envScene, 0.04);
   pmrem.dispose();
   return envRT.texture;
 }
 
-function buildLetterAGeometry() {
-  // Bold modern geometric "A"
-  const shape = new THREE.Shape();
-  shape.moveTo(-1.38, -1.55);
-  shape.lineTo(-0.34, 1.6);
-  shape.lineTo(0.34, 1.6);
-  shape.lineTo(1.38, -1.55);
-  shape.lineTo(0.74, -1.55);
-  shape.lineTo(0.49, -0.76);
-  shape.lineTo(-0.49, -0.76);
-  shape.lineTo(-0.74, -1.55);
-  shape.closePath();
+const EXTRUDE_OPTS = {
+  depth: 0.72,
+  bevelEnabled: true,
+  bevelThickness: 0.09,
+  bevelSize: 0.065,
+  bevelSegments: 5,
+  curveSegments: 24
+};
 
-  // Inner triangular counter hole
+function buildLetterA() {
+  const s = new THREE.Shape();
+  s.moveTo(-1.28, -1.5);
+  s.lineTo(-0.3, 1.5);
+  s.lineTo(0.3, 1.5);
+  s.lineTo(1.28, -1.5);
+  s.lineTo(0.68, -1.5);
+  s.lineTo(0.45, -0.76);
+  s.lineTo(-0.45, -0.76);
+  s.lineTo(-0.68, -1.5);
+  s.closePath();
+
   const hole = new THREE.Path();
-  hole.moveTo(-0.31, -0.22);
-  hole.lineTo(0.31, -0.22);
-  hole.lineTo(0.0, 0.8);
+  hole.moveTo(-0.28, -0.24);
+  hole.lineTo(0.28, -0.24);
+  hole.lineTo(0.0, 0.74);
   hole.closePath();
-  shape.holes.push(hole);
+  s.holes.push(hole);
 
-  const geo = new THREE.ExtrudeGeometry(shape, {
-    depth: 0.72,
-    bevelEnabled: true,
-    bevelThickness: 0.08,
-    bevelSize: 0.06,
-    bevelSegments: 4,
-    curveSegments: 12
-  });
-  geo.center();
+  const geo = new THREE.ExtrudeGeometry(s, EXTRUDE_OPTS);
+  geo.translate(0, 0, -EXTRUDE_OPTS.depth / 2);
   return geo;
 }
 
-function buildSunburstGroup(material) {
-  const group = new THREE.Group();
+function buildLetterJ() {
+  // Clean geometric "J" matching the height (-1.5 to +1.5) and stroke weight (~0.56) of "A"
+  const s = new THREE.Shape();
+  s.moveTo(0.26, 1.5);
+  s.lineTo(0.84, 1.5);
+  s.lineTo(0.84, -0.48);
+  // Outer bottom curve
+  s.bezierCurveTo(0.84, -1.24, 0.36, -1.56, -0.28, -1.56);
+  s.bezierCurveTo(-0.88, -1.56, -1.28, -1.16, -1.28, -0.58);
+  s.lineTo(-0.7, -0.58);
+  // Inner bottom curve
+  s.bezierCurveTo(-0.7, -0.88, -0.52, -1.04, -0.24, -1.04);
+  s.bezierCurveTo(0.08, -1.04, 0.26, -0.84, 0.26, -0.46);
+  s.closePath();
 
-  // Central bold 3D "A"
-  const letterMesh = new THREE.Mesh(buildLetterAGeometry(), material);
-  group.add(letterMesh);
-
-  // Radiating geometric sun-rays around the "A" matching the iconic dark-chrome sunburst look
-  const rayAngles = [90, 46, 8, -32, -148, 172, 134];
-  const rayGeo = new THREE.ExtrudeGeometry(
-    (() => {
-      const s = new THREE.Shape();
-      const w = 0.24, h = 1.08;
-      s.moveTo(-w / 2, 0);
-      s.lineTo(w / 2, 0);
-      s.lineTo(w / 2, h);
-      s.lineTo(-w / 2, h);
-      s.closePath();
-      return s;
-    })(),
-    {
-      depth: 0.64,
-      bevelEnabled: true,
-      bevelThickness: 0.06,
-      bevelSize: 0.045,
-      bevelSegments: 3
-    }
-  );
-  rayGeo.translate(0, 0, -0.32);
-
-  rayAngles.forEach((deg) => {
-    const rad = (deg * Math.PI) / 180;
-    const pivot = new THREE.Group();
-    pivot.rotation.z = rad - Math.PI / 2;
-    const ray = new THREE.Mesh(rayGeo, material);
-    // Distance from center so rays emerge cleanly around the "A" silhouette
-    const radius = deg === 90 ? 1.72 : 1.56;
-    ray.position.y = radius;
-    pivot.add(ray);
-    group.add(pivot);
-  });
-
-  return group;
+  const geo = new THREE.ExtrudeGeometry(s, EXTRUDE_OPTS);
+  geo.translate(0, 0, -EXTRUDE_OPTS.depth / 2);
+  return geo;
 }
 
 function initAJ3D() {
@@ -115,7 +89,7 @@ function initAJ3D() {
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.25;
+  renderer.toneMappingExposure = 1.3;
   host.innerHTML = "";
   host.appendChild(renderer.domElement);
 
@@ -123,32 +97,70 @@ function initAJ3D() {
   scene.environment = createStudioEnv(renderer);
 
   const camera = new THREE.PerspectiveCamera(36, 1, 0.1, 100);
-  camera.position.set(0, 0, 9.6);
+  camera.position.set(0, 0, 8.6);
 
-  // Dark chrome material with crisp blue/white specular highlights
-  const chromeMat = new THREE.MeshStandardMaterial({
-    color: new THREE.Color(0x1b243b),
-    metalness: 0.96,
-    roughness: 0.14,
-    envMapIntensity: 1.9
+  // Bright platinum-silver front face + vibrant glowing electric-blue 3D extruded sides
+  const frontMat = new THREE.MeshStandardMaterial({
+    color: new THREE.Color(0xeef4ff),
+    emissive: new THREE.Color(0x1d3b8a),
+    emissiveIntensity: 0.32,
+    metalness: 0.55,
+    roughness: 0.16,
+    envMapIntensity: 1.5
   });
 
-  const emblem = buildSunburstGroup(chromeMat);
-  emblem.rotation.set(0.18, -0.38, -0.05);
+  const sideMat = new THREE.MeshStandardMaterial({
+    color: new THREE.Color(0x2563ff),
+    emissive: new THREE.Color(0x0b2eff),
+    emissiveIntensity: 0.55,
+    metalness: 0.45,
+    roughness: 0.2,
+    envMapIntensity: 1.4
+  });
+
+  const materials = [frontMat, sideMat];
+
+  const emblem = new THREE.Group();
+
+  const meshA = new THREE.Mesh(buildLetterA(), materials);
+  meshA.position.x = -1.25;
+  emblem.add(meshA);
+
+  const meshJ = new THREE.Mesh(buildLetterJ(), materials);
+  meshJ.position.x = 1.38;
+  emblem.add(meshJ);
+
+  // Subtle glowing orbital accent ring behind "AJ"
+  const ringGeo = new THREE.TorusGeometry(2.85, 0.032, 16, 96);
+  const ringMat = new THREE.MeshStandardMaterial({
+    color: new THREE.Color(0x60a5fa),
+    emissive: new THREE.Color(0x2563ff),
+    emissiveIntensity: 0.9,
+    metalness: 0.7,
+    roughness: 0.15
+  });
+  const ring = new THREE.Mesh(ringGeo, ringMat);
+  ring.rotation.set(1.15, 0.35, 0.2);
+  emblem.add(ring);
+
+  emblem.rotation.set(0.12, -0.26, 0);
   scene.add(emblem);
 
-  // Directional key, blue rim, and soft fill lights
-  const keyLight = new THREE.DirectionalLight(0x93c5fd, 3.2);
-  keyLight.position.set(5, 6, 7);
-  scene.add(keyLight);
+  // Strong, balanced studio lighting so "AJ" is unmistakably clear from every angle
+  scene.add(new THREE.AmbientLight(0xdbeafe, 1.4));
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x1e3a8a, 1.5));
 
-  const blueRim = new THREE.DirectionalLight(0x0022ff, 4.5);
-  blueRim.position.set(-6, -3, 4);
-  scene.add(blueRim);
+  const frontKey = new THREE.DirectionalLight(0xffffff, 2.8);
+  frontKey.position.set(4, 5, 8);
+  scene.add(frontKey);
 
-  const whiteEdge = new THREE.PointLight(0xe0f2fe, 12, 22);
-  whiteEdge.position.set(3.5, 4.5, 5.5);
-  scene.add(whiteEdge);
+  const blueFill = new THREE.DirectionalLight(0x3b82ff, 2.4);
+  blueFill.position.set(-6, -3, 6);
+  scene.add(blueFill);
+
+  const rimLight = new THREE.PointLight(0x93c5fd, 14, 24);
+  rimLight.position.set(0, 4, 6);
+  scene.add(rimLight);
 
   const section = host.closest(".spline-section") || document.body;
   let targetMouseX = 0, targetMouseY = 0;
@@ -160,7 +172,7 @@ function initAJ3D() {
     const h = host.clientHeight || 520;
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
-    camera.position.z = w < 420 ? 11.2 : 9.4;
+    camera.position.z = w < 440 ? 11.4 : 9.2;
     camera.updateProjectionMatrix();
   }
   resize();
@@ -179,7 +191,6 @@ function initAJ3D() {
   window.addEventListener("scroll", updateScroll, { passive: true });
   updateScroll();
 
-  let rafId = 0;
   let isVisible = true;
   if ("IntersectionObserver" in window) {
     new IntersectionObserver((entries) => {
@@ -189,20 +200,21 @@ function initAJ3D() {
 
   const clock = new THREE.Clock();
   function animate() {
-    rafId = requestAnimationFrame(animate);
+    requestAnimationFrame(animate);
     if (!isVisible) return;
 
     const t = clock.getElapsedTime();
     mouseX += (targetMouseX - mouseX) * 0.06;
     mouseY += (targetMouseY - mouseY) * 0.06;
 
-    // Smooth scroll-linked spin + subtle float + interactive mouse tilt
-    const targetRotY = -0.35 + scrollProgress * Math.PI * 1.65 + mouseX * 0.42 + Math.sin(t * 0.55) * 0.14;
-    const targetRotX = 0.14 + Math.sin(scrollProgress * Math.PI) * 0.25 + mouseY * 0.28 + Math.cos(t * 0.45) * 0.08;
+    // Gentle, readable 3D sway + scroll tilt (keeps "AJ" facing forward & readable!)
+    const targetRotY = -0.22 + Math.sin(scrollProgress * Math.PI * 1.5) * 0.48 + mouseX * 0.36 + Math.sin(t * 0.65) * 0.16;
+    const targetRotX = 0.08 + Math.cos(scrollProgress * Math.PI) * 0.14 + mouseY * 0.22 + Math.cos(t * 0.5) * 0.06;
 
     emblem.rotation.y += (targetRotY - emblem.rotation.y) * 0.08;
     emblem.rotation.x += (targetRotX - emblem.rotation.x) * 0.08;
-    emblem.position.y = Math.sin(t * 1.1) * 0.14;
+    emblem.position.y = Math.sin(t * 1.15) * 0.14;
+    ring.rotation.z = t * 0.35;
 
     renderer.render(scene, camera);
   }
