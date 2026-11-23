@@ -93,10 +93,22 @@ must(
   /g\.fromTo\(veil,\{opacity:0\},\{opacity:1,ease:'sine\.inOut',scrollTrigger:\{trigger:wall,start:'top 165%',end:'top 88%',scrub:\.8\}\}\);\s*g\.fromTo\(wall,\{opacity:0\},\{opacity:1,ease:'none',scrollTrigger:\{trigger:wall,start:'top 96%',end:'top 62%',scrub:\.8\}\}\);/,
   ''
 );
-// Shorten mobile mosaic scroll duration for faster, smoother mobile UX
+// Shorten desktop & mobile mosaic + poster scroll duration for faster, snappier UX
 must(
   /end:function\(\)\{return '\+='\+Math\.round\(innerHeight\*2\.4\)\},scrub:\.8/,
-  "end:function(){return '+='+Math.round(innerHeight*1.15)},scrub:.45"
+  "end:function(){return '+='+Math.round(innerHeight*0.8)},scrub:.35"
+);
+must(
+  /trigger:sec,start:'top top',end:'bottom bottom',scrub:1,invalidateOnRefresh:true/,
+  "trigger:sec,start:'top top',end:'bottom bottom',scrub:.45,invalidateOnRefresh:true"
+);
+must(
+  /po\.offsetHeight-innerHeight\*2/g,
+  'po.offsetHeight-innerHeight*1.15'
+);
+must(
+  /trigger:po,start:'top top',end:function\(\)\{return 'top\+='\+Math\.round\(po\.offsetHeight-innerHeight\*1\.15\)\+' top'\},scrub:\.8/,
+  "trigger:po,start:'top top',end:function(){return 'top+='+Math.round(po.offsetHeight-innerHeight*1.15)+' top'},scrub:.4"
 );
 
 // ---------- 2. nav ----------

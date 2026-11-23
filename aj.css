@@ -27,13 +27,19 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Keep mosaic scroll height compact & snappy on desktop and mobile */
+/* Compact, snappy scroll heights for Hero Mosaic (.wr-section) & Poster (.wr-poster) */
 .wr-section {
-  height: 200vh !important;
+  height: 155vh !important;
+}
+.wr-poster {
+  height: 310vh !important;
 }
 @media (max-width: 991px) {
   .wr-section {
-    height: 195vh !important;
+    height: 150vh !important;
+  }
+  .wr-poster {
+    height: 285vh !important;
   }
 }
 @media (max-width: 767px) {
